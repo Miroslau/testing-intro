@@ -38,10 +38,10 @@ function changeQuantity(cart, id, newQuantity) {
 
   return cart;
 }
-const headphones = { id: 1, name: 'Наушники', price: 49900, stock: 8 };
-const cart = [{ ...headphones, quantity: 1 }];
-changeQuantity(cart, 1, 4)
-function removeFromCart() { return notImplemented(); }
+
+function removeFromCart(cart, id) {
+  return cart.filter((item) => item.id !== id);
+}
 function calculateCartSubtotal() { return notImplemented(); }
 function calculateOrderTotal() { return notImplemented(); }
 
