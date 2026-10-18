@@ -2,11 +2,69 @@ function notImplemented() {
   throw new Error('Корзина ещё не реализована. Сначала прочитайте тесты.');
 }
 
-function addToCart() { return notImplemented(); }
-function changeQuantity() { return notImplemented(); }
-function removeFromCart() { return notImplemented(); }
-function calculateCartSubtotal() { return notImplemented(); }
-function calculateOrderTotal() { return notImplemented(); }
+function addToCart(cart, product, quantity) {
+  if (!quantity) {
+    throw new RangeError;
+  }
+
+  if (quantity > product.stock) {
+    throw new RangeError;
+  }
+
+  const cartItem = cart.find((item) => item.id === product.id);
+
+  if (cartItem) {
+    cartItem.quantity += quantity;
+  } else {
+    cart.push({ id: product.id, name: product.name, price: product.price, stock: product.stock, quantity: quantity })
+  }
+
+  return cart;
+}
+function changeQuantity(cart, id, newQuantity) {
+  if (newQuantity <= 0) {
+    throw new RangeError;
+  }
+
+  const cartIndex = cart.findIndex((item) => item.id === id);
+
+  if (cartIndex !== -1) {
+    const cartItem = cart[cartIndex];
+    if (newQuantity > cartItem.stock) {
+      throw new RangeError();
+    }
+    cart[cartIndex] = {...cart[cartIndex], quantity: newQuantity};
+  }
+
+  return cart;
+}
+
+function removeFromCart(cart, id) {
+  return cart.filter((item) => item.id !== id);
+}
+function calculateCartSubtotal(cart) {
+  return cart.reduce((sum, item) => sum + item.price * item.quantity, 0);
+}
+function calculateOrderTotal(cart, promoCode = '') {
+  const subTotal = calculateCartSubtotal(cart);
+
+  let discount = 0;
+
+  if (promoCode === 'SAVE10' && subTotal >= 20000) {
+    discount = Math.floor(subTotal * 0.1);
+  }
+
+  const freeDelivery = subTotal >= 50000 ? 0 : 30000;
+
+  const totalPrice = subTotal - discount + freeDelivery;
+
+  return {
+    subtotal: subTotal,
+    discount,
+    delivery: freeDelivery,
+    total: totalPrice
+  }
+}
 
 const cartApi = { addToCart, changeQuantity, removeFromCart, calculateCartSubtotal, calculateOrderTotal };
 
