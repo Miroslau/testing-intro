@@ -21,7 +21,26 @@ function addToCart(cart, product, quantity) {
 
   return cart;
 }
-function changeQuantity() { return notImplemented(); }
+function changeQuantity(cart, id, newQuantity) {
+  if (newQuantity <= 0) {
+    throw new RangeError;
+  }
+
+  const cartIndex = cart.findIndex((item) => item.id === id);
+
+  if (cartIndex !== -1) {
+    const cartItem = cart[cartIndex];
+    if (newQuantity > cartItem.stock) {
+      throw new RangeError();
+    }
+    cart[cartIndex] = {...cart[cartIndex], quantity: newQuantity};
+  }
+
+  return cart;
+}
+const headphones = { id: 1, name: 'Наушники', price: 49900, stock: 8 };
+const cart = [{ ...headphones, quantity: 1 }];
+changeQuantity(cart, 1, 4)
 function removeFromCart() { return notImplemented(); }
 function calculateCartSubtotal() { return notImplemented(); }
 function calculateOrderTotal() { return notImplemented(); }
